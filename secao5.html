@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>VOZ DA LARI - Bate-papo</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body class="light-theme">
+<div class="container">
+  <header>
+    <h1>VOZ DA LARI</h1>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="secao2.html">Livros Favoritos</a>
+      <a href="secao3.html">Letras de Músicas</a>
+      <a href="secao4.html">Notícias</a>
+      <a href="secao5.html">Bate-papo</a>
+      <a href="secao6.html">Fanfics</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Salas de Bate-papo</h1>
+    <p>Faça seu login e escolha uma sala para conversar sobre assuntos em comum.</p>
+
+    <!-- Seção de Login -->
+    <section id="login-section">
+      <h2>Login</h2>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="username">Nome de usuário:</label>
+          <input type="text" id="username" required placeholder="Digite seu nome de usuário">
+        </div>
+        <button type="submit">Entrar no chat</button>
+      </form>
+    </section>
+
+    <!-- Seção de Salas -->
+    <section id="chat-section">
+      <h2>Escolha uma sala para conversar</h2>
+      <div class="salas-container">
+        <div class="sala sala-diversos" data-sala="diversos">
+          <h3>Assuntos Diversos</h3>
+          <p>Conversas sobre qualquer assunto</p>
+          <div class="online-count">0/15 online</div>
+        </div>
+        
+        <div class="sala sala-musicas" data-sala="musicas">
+          <h3>Músicas</h3>
+          <p>Conversas sobre música e artistas</p>
+          <div class="online-count">0/15 online</div>
+        </div>
+        
+        <div class="sala sala-livros" data-sala="livros">
+          <h3>Livros</h3>
+          <p>Conversas sobre literatura</p>
+          <div class="online-count">0/15 online</div>
+        </div>
+        
+        <div class="sala sala-apoio" data-sala="apoio">
+          <h3>Cantinho de Apoio</h3>
+          <p>Um espaço para desabafar e receber apoio</p>
+          <div class="online-count">0/15 online</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interface do Chat -->
+    <section id="chat-interface">
+      <div class="chat-header">
+        <div>
+          <button class="btn-voltar" id="btn-voltar">Voltar</button>
+          <span id="nome-sala">Sala</span>
+        </div>
+        <div class="online-count" id="contador-online">0/15 online</div>
+      </div>
+      
+      <div class="chat-messages" id="chat-messages">
+        <!-- As mensagens serão inseridas aqui via JavaScript -->
+      </div>
+      
+      <div class="chat-input">
+        <input type="text" id="mensagem-input" placeholder="Digite sua mensagem...">
+        <button id="enviar-mensagem">Enviar</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Larissa Barista - Escritora</p>
+    <p>Todos os direitos reservados - 2025</p>
+    <nav>
+      <a href="https://instagram.com"><button>Instagram</button></a>
+      <a href="https://wa.me/seunumerodetelefone"><button>WhatsApp</button></a>
+    </nav>
+  </footer>
+</div>
+
+<script>
+// Variáveis globais
+let usuario = null;
+let salaAtual = null;
+const maxUsuariosPorSala = 15;
+
+// Dados simulados (em uma aplicação real, isso viria de um backend)
+const salas = {
+  diversos: { nome: "Assuntos Diversos", usuarios: [], mensagens: [] },
+  musicas: { nome: "Músicas", usuarios: [], mensagens: [] },
+  livros: { nome: "Livros", usuarios: [], mensagens: [] },
+  apoio: { nome: "Cantinho de Apoio", usuarios: [], mensagens: [] }
+};
+
+// Elementos do DOM
+const loginSection = document.getElementById('login-section');
+const chatSection = document.getElementById('chat-section');
+const chatInterface = document.getElementById('chat-interface');
+const loginForm = document.getElementById('login-form');
+const usernameInput = document.getElementById('username');
+const chatMessages = document.getElementById('chat-messages');
+const messageInput = document.getElementById('mensagem-input');
+const sendButton = document.getElementById('enviar-mensagem');
+const backButton = document.getElementById('btn-voltar');
+const roomNameElement = document.getElementById('nome-sala');
+const onlineCounterElement = document.getElementById('contador-online');
+
+// Event Listeners
+loginForm.addEventListener('submit', handleLogin);
+backButton.addEventListener('click', leaveRoom);
+sendButton.addEventListener('click', sendMessage);
+messageInput.addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    sendMessage();
+  }
+});
+
+// Adicionar event listeners para as salas
+document.querySelectorAll('.sala').forEach(sala => {
+  sala.addEventListener('click', () => {
+    const salaId = sala.getAttribute('data-sala');
+    joinRoom(salaId);
+  });
+});
+
+// Função para fazer login
+function handleLogin(e) {
+  e.preventDefault();
+  
+  const username = usernameInput.value.trim();
+  if (username) {
+    usuario = username;
+    loginSection.style.display = 'none';
+    chatSection.style.display = 'block';
+    
+    // Adicionar mensagens de exemplo às salas
+    adicionarMensagensExemplo();
+    
+    // Atualizar contadores de usuários online
+    atualizarContadores();
+  }
+}
+
+// Função para entrar em uma sala
+function joinRoom(salaId) {
+  if (salas[salaId].usuarios.length >= maxUsuariosPorSala) {
+    alert('Esta sala está cheia. Tente outra sala.');
+    return;
+  }
+  
+  salaAtual = salaId;
+  chatSection.style.display = 'none';
+  chatInterface.style.display = 'block';
+  roomNameElement.textContent = salas[salaId].nome;
+  
+  // Simular entrada de usuários (em app real, isso viria do servidor)
+  if (!salas[salaId].usuarios.includes(usuario)) {
+    salas[salaId].usuarios.push(usuario);
+  }
+  
+  // Atualizar contador
+  atualizarContadorSala(salaId);
+  
+  // Carregar mensagens
+  carregarMensagens();
+}
+
+// Função para sair da sala
+function leaveRoom() {
+  if (salaAtual) {
+    // Remover usuário da sala (em app real, isso seria feito no servidor)
+    const index = salas[salaAtual].usuarios.indexOf(usuario);
+    if (index > -1) {
+      salas[salaAtual].usuarios.splice(index, 1);
+    }
+    
+    salaAtual = null;
+    chatInterface.style.display = 'none';
+    chatSection.style.display = 'block';
+    
+    // Atualizar contadores
+    atualizarContadores();
+  }
+}
+
+// Função para enviar mensagem
+function sendMessage() {
+  const texto = messageInput.value.trim();
+  if (texto && salaAtual) {
+    // Adicionar mensagem (em app real, isso seria enviado ao servidor)
+    const mensagem = {
+      usuario: usuario,
+      texto: texto,
+      tempo: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    
+    salas[salaAtual].mensagens.push(mensagem);
+    
+    // Limpar input
+    messageInput.value = '';
+    
+    // Atualizar chat
+    exibirMensagem(mensagem);
+    
+    // Simular resposta automática em alguns casos
+    simularResposta(texto);
+  }
+}
+
+// Função para carregar mensagens
+function carregarMensagens() {
+  chatMessages.innerHTML = '';
+  
+  if (salaAtual && salas[salaAtual].mensagens) {
+    salas[salaAtual].mensagens.forEach(mensagem => {
+      exibirMensagem(mensagem);
+    });
+  }
+  
+  // Rolagem para baixo
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Função para exibir uma mensagem
+function exibirMensagem(mensagem) {
+  const messageElement = document.createElement('div');
+  messageElement.classList.add('message');
+  messageElement.classList.add(mensagem.usuario === usuario ? 'sent' : 'received');
+  
+  messageElement.innerHTML = `
+    <div class="message-sender">${mensagem.usuario}</div>
+    <div>${mensagem.texto}</div>
+    <div class="message-time">${mensagem.tempo}</div>
+  `;
+  
+  chatMessages.appendChild(messageElement);
+  
+  // Rolagem para baixo
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Função para simular respostas automáticas
+function simularResposta(texto) {
+  // Apenas para demonstração - em uma aplicação real, isso seria feito pelo servidor
+  const respostas = {
+    diversos: [
+      "Alguém mais quer compartilhar uma opinião sobre isso?",
+      "Interessante ponto de vista!",
+      "O que vocês acham sobre este assunto?"
+    ],
+    musicas: [
+      "Essa é uma das minhas músicas favoritas também!",
+      "Alguém conhece outros trabalhos desse artista?",
+      "Alguém já foi em algum show recentemente?"
+    ],
+    livros: [
+      "Esse livro é realmente incrível!",
+      "Alguém já leu outros livros do mesmo autor?",
+      "Estou procurando recomendações de livros, alguém tem alguma?"
+    ],
+    apoio: [
+      "Estamos aqui para te apoiar!",
+      "Alguém mais já passou por algo semelhante?",
+      "Lembre-se: você não está sozinho(a)."
+    ]
+  };
+  
+  // 30% de chance de uma resposta automática
+  if (Math.random() < 0.3 && salaAtual) {
+    setTimeout(() => {
+      const respostasSala = respostas[salaAtual];
+      const resposta = respostasSala[Math.floor(Math.random() * respostasSala.length)];
+      
+      const mensagemResposta = {
+        usuario: "Sistema",
+        texto: resposta,
+        tempo: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      
+      salas[salaAtual].mensagens.push(mensagemResposta);
+      exibirMensagem(mensagemResposta);
+    }, 1000 + Math.random() * 2000);
+  }
+}
+
+// Função para adicionar mensagens de exemplo
+function adicionarMensagensExemplo() {
+  const exemplos = {
+    diversos: [
+      { usuario: "Ana", texto: "Alguém assistiu o último episódio daquela série?", tempo: "10:15" },
+      { usuario: "Carlos", texto: "Estou procurando recomendações de filmes, alguém tem?", tempo: "10:20" }
+    ],
+    musicas: [
+      { usuario: "João", texto: "Ouçam a nova música do meu artista favorito!", tempo: "09:30" },
+      { usuario: "Maria", texto: "Alguém vai no festival de música no próximo mês?", tempo: "09:45" }
+    ],
+    livros: [
+      { usuario: "Pedro", texto: "Terminei de ler esse livro incrível ontem!", tempo: "11:05" },
+      { usuario: "Laura", texto: "Alguém participa de algum clube do livro?", tempo: "11:30" }
+    ],
+    apoio: [
+      { usuario: "Sistema", texto: "Este é um espaço seguro para compartilhar.", tempo: "08:00" },
+      { usuario: "Sistema", texto: "Lembre-se: todos aqui querem te ajudar.", tempo: "08:05" }
+    ]
+  };
+  
+  // Adicionar exemplos apenas se a sala estiver vazia
+  for (const sala in exemplos) {
+    if (salas[sala].mensagens.length === 0) {
+      salas[sala].mensagens = exemplos[sala];
+    }
+  }
+}
+
+// Função para atualizar contador de uma sala específica
+function atualizarContadorSala(salaId) {
+  const contador = salas[salaId].usuarios.length;
+  onlineCounterElement.textContent = `${contador}/${maxUsuariosPorSala} online`;
+}
+
+// Função para atualizar todos os contadores
+function atualizarContadores() {
+  document.querySelectorAll('.sala').forEach(salaElement => {
+    const salaId = salaElement.getAttribute('data-sala');
+    const contador = salas[salaId].usuarios.length;
+    salaElement.querySelector('.online-count').textContent = `${contador}/${maxUsuariosPorSala} online`;
+  });
+}
+
+// Inicialização
+loginSection.style.display = 'block';
+chatSection.style.display = 'none';
+chatInterface.style.display = 'none';
+</script>
+</body>
+</html>
