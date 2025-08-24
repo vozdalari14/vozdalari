@@ -364,3 +364,8 @@ footer button:hover {
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(to bottom, #7b3acb, #5a2ebd);
 }
+.minha-capa{
+  width: 400px;
+  height:auto;
+}
+
