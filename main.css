@@ -364,12 +364,19 @@ footer button:hover {
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(to bottom, #7b3acb, #5a2ebd);
 }
+body{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height:  100vh;
+  margin: 0;
+}
 .minha-capa{
-  display: block;
   width: 500px;
   height: auto;
-  margin: 0 auto;
+  
 }
+
 
 
 
