@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>VOZ DA LARI</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body class="light-theme">
+<div class="container">
+  <header>
+    <h1>VOZ DA LARI</h1>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="secao2.html">Livros Favoritos</a>
+      <a href="secao3.html">Letras de Músicas</a>
+      <a href="secao4.html">Notícias</a>
+      <a href="secao5.html">Bate-papo</a>
+      <a href="secao6.html">Fanfics</a>
+    </nav>
+
+  </header>
+<h1>📚 Fanfic Central</h1>
+    <p>Compartilhe sua história com o mundo!</p>
+  <form id="fanficForm">
+    <input type="text" id="author" placeholder="Seu nome (ou deixe em branco para anônimo)">
+    <textarea id="story" rows="6" placeholder="Escreva sua fanfic aqui..." required></textarea>
+    <button type="submit">Publicar Fanfic</button>
+  </form>
+
+  <main id="storyList">
+    <!-- As histórias aparecerão aqui -->
+  </main>
+
+  <script>
+    const form = document.getElementById('fanficForm');
+    const storyList = document.getElementById('storyList');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const author = document.getElementById('author').value.trim() || 'Anônimo';
+      const story = document.getElementById('story').value.trim();
+
+      if (story === '') return;
+
+      const storyDiv = document.createElement('div');
+      storyDiv.className = 'story';
+      storyDiv.innerHTML = `
+        <p>${story.replace(/\n/g, '<br>')}</p>
+        <p class="author">— ${author}</p>
+      `;
+
+      storyList.prepend(storyDiv);
+      form.reset();
+    });
+  </script>
+
+  <footer>
+    <p>Larissa Barista - Escritora</p>
+    <p>Todos os direitos reservados - 2025</p>
+    <nav>
+      <a href="https://instagram.com"><button>Instagram</button></a>
+      <a href="https://wa.me/seunumerodetelefone"><button>WhatsApp</button></a>
+    </nav>
+  </footer>
+  </div>
+  </body></html>

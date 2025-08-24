@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>VOZ DA LARI - Livros Favoritos</title>
+  <link rel="stylesheet" href="main.css">
+  <style>
+    /* Estilos específicos para esta página */
+    .livros-main {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .resenhas-container {
+      order: 1;
+      max-width: 1000px;
+      margin: 2rem auto;
+      width: 100%;
+    }
+    
+    .login-container {
+      order: 2;
+      max-width: 350px;
+      margin: 1rem auto 3rem;
+      padding: 1.5rem;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .admin-panel {
+      order: 3;
+      display: none;
+      background-color: #f8f9fa;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem auto;
+      max-width: 1000px;
+      width: 100%;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+      text-align: left;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+      color: #333;
+      font-size: 0.9rem;
+    }
+    
+    .form-group input, 
+    .form-group textarea, 
+    .form-group select {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    
+    .form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    .btn-enviar {
+      background-color: #6a11cb;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background-color 0.3s;
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+    
+    .btn-enviar:hover {
+      background-color: #2575fc;
+    }
+    
+    .resenhas-lista {
+      margin-top: 2rem;
+    }
+    
+    .resenha-card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .resenha-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+    
+    .resenha-meta {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    
+    .resenha-titulo {
+      font-size: 1.5rem;
+      margin: 0 0 0.5rem 0;
+      color: #333;
+    }
+    
+    .resenha-autor {
+      font-style: italic;
+      margin-bottom: 0.5rem;
+      color: #6a11cb;
+    }
+    
+    .resenha-capa {
+      max-width: 150px;
+      float: left;
+      margin: 0 1.5rem 1rem 0;
+      border-radius: 4px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .resenha-texto {
+      line-height: 1.6;
+      text-align: justify;
+    }
+    
+    .resenha-texto::after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+    
+    .resenha-nota {
+      display: inline-block;
+      background-color: #6a11cb;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+    
+    .sem-resenhas {
+      text-align: center;
+      padding: 2rem;
+      color: #666;
+      font-style: italic;
+    }
+    
+    .acoes-resenha {
+      margin-top: 1rem;
+      text-align: right;
+    }
+    
+    .btn-editar, .btn-excluir {
+      background-color: transparent;
+      border: 1px solid #ddd;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-left: 0.5rem;
+      transition: all 0.3s;
+      font-size: 0.8rem;
+    }
+    
+    .btn-editar {
+      color: #2575fc;
+      border-color: #2575fc;
+    }
+    
+    .btn-editar:hover {
+      background-color: #2575fc;
+      color: white;
+    }
+    
+    .btn-excluir {
+      color: #dc3545;
+      border-color: #dc3545;
+    }
+    
+    .btn-excluir:hover {
+      background-color: #dc3545;
+      color: white;
+    }
+    
+    .admin-only {
+      display: none;
+    }
+    
+    .logado-como {
+      text-align: right;
+      margin-bottom: 1rem;
+      color: #666;
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .btn-sair {
+      background-color: transparent;
+      color: #dc3545;
+      border: 1px solid #dc3545;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.7rem;
+    }
+    
+    .btn-sair:hover {
+      background-color: #dc3545;
+      color: white;
+    }
+    
+    .login-container h2 {
+      font-size: 1.3rem;
+      margin-bottom: 1.2rem;
+      color: #6a11cb;
+    }
+    
+    @media (max-width: 768px) {
+      .resenha-capa {
+        float: none;
+        display: block;
+        margin: 0 auto 1rem auto;
+        max-width: 100%;
+      }
+      
+      .login-container {
+        margin: 1rem;
+        width: calc(100% - 2rem);
+      }
+      
+      .resenhas-container, .admin-panel {
+        margin: 1rem;
+        width: calc(100% - 2rem);
+      }
+    }
+  </style>
+</head>
+<body class="light-theme">
+<div class="container">
+  <header>
+    <h1>VOZ DA LARI</h1>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="secao2.html">Livros Favoritos</a>
+      <a href="secao3.html">Letras de Músicas</a>
+      <a href="secao4.html">Notícias</a>
+      <a href="secao5.html">Bate-papo</a>
+      <a href="secao6.html">Fanfics</a>
+    </nav>
+  </header>
+
+  <main class="livros-main">
+    <h1>Meus Livros Favoritos</h1>
+    <p>São vários os livros que fazem parte da minha vida, aqui vou dedicar esse espaço para resumir cada um e falar minha opinião.</p>
+
+    <!-- Lista de resenhas (visível para todos) -->
+    <div class="resenhas-container">
+      <div class="resenhas-lista" id="resenhas-lista">
+        <div class="sem-resenhas" id="sem-resenhas">
+          <p>Nenhuma resenha foi publicada ainda.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Painel de login (sempre visível) -->
+    <div class="login-container" id="login-container">
+      <h2>Acesso da Autora</h2>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="username">Usuário:</label>
+          <input type="text" id="username" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Senha:</label>
+          <input type="password" id="password" required>
+        </div>
+        <button type="submit" class="btn-enviar">Entrar</button>
+      </form>
+    </div>
+
+    <!-- Painel administrativo (apenas para a autora) -->
+    <div class="admin-panel" id="admin-panel">
+      <div class="logado-como">
+        <span>Logada como: <span id="nome-autora">Autora</span></span>
+        <button class="btn-sair" id="btn-sair">Sair</button>
+      </div>
+      <h2>Adicionar nova resenha</h2>
+      <form id="form-resenha">
+        <div class="form-group">
+          <label for="titulo">Título do livro:</label>
+          <input type="text" id="titulo" required>
+        </div>
+        <div class="form-group">
+          <label for="autor-livro">Autor do livro:</label>
+          <input type="text" id="autor-livro" required>
+        </div>
+        <div class="form-group">
+          <label for="capa">URL da imagem da capa (opcional):</label>
+          <input type="url" id="capa" placeholder="https://exemplo.com/capa.jpg">
+        </div>
+        <div class="form-group">
+          <label for="genero">Gênero:</label>
+          <select id="genero">
+            <option value="Romance">Romance</option>
+            <option value="Ficção">Ficção</option>
+            <option value="Fantasia">Fantasia</option>
+            <option value="Suspense">Suspense</option>
+            <option value="Terror">Terror</option>
+            <option value="Biografia">Biografia</option>
+            <option value="Poesia">Poesia</option>
+            <option value="Autoajuda">Autoajuda</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="nota">Sua nota (0-5):</label>
+          <select id="nota" required>
+            <option value="5">★★★★★ (5/5)</option>
+            <option value="4">★★★★☆ (4/5)</option>
+            <option value="3">★★★☆☆ (3/5)</option>
+            <option value="2">★★☆☆☆ (2/5)</option>
+            <option value="1">★☆☆☆☆ (1/5)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="resenha">Sua resenha:</label>
+          <textarea id="resenha-texto" required></textarea>
+        </div>
+        <button type="submit" class="btn-enviar">Publicar resenha</button>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <p>Larissa Barista - Escritora</p>
+    <p>Todos os direitos reservados - 2025</p>
+    <nav>
+      <a href="https://instagram.com"><button>Instagram</button></a>
+      <a href="https://wa.me/seunumerodetelefone"><button>WhatsApp</button></a>
+    </nav>
+  </footer>
+</div>
+
+<script>
+// Credenciais de login (em uma aplicação real, isso seria verificado no servidor)
+const CREDENCIAIS = {
+  usuario: "larissa",
+  senha: "livros2025"
+};
+
+// Dados iniciais das resenhas
+let resenhas = [
+  {
+    id: 1,
+    titulo: "A Culpa é das Estrelas",
+    autor: "John Green",
+    genero: "Romance",
+    capa: "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1624264978i/11870085.jpg",
+    nota: 5,
+    resenha: "Um livro que me tocou profundamente. A forma como John Green aborda temas delicados como doença e perda com sensibilidade e humor é incrível. Hazel e Augustus são personagens cativantes que ficarão para sempre na memória. A narrativa é emocionante e nos faz refletir sobre o valor da vida e das conexões que fazemos.",
+    data: "15/03/2025"
+  },
+  {
+    id: 2,
+    titulo: "1984",
+    autor: "George Orwell",
+    genero: "Ficção Distópica",
+    capa: "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1657781256i/61439040.jpg",
+    nota: 5,
+    resenha: "Uma obra-prima atemporal que continua assustadoramente relevante. A visão de Orwell sobre vigilância, controle de informação e manipulação da verdade é profética. Winston Smith é um personagem complexo cuja jornada nos faz questionar sobre liberdade, privacidade e a natureza do poder. Leitura essencial para entender os perigos do autoritarismo.",
+    data: "10/03/2025"
+  }
+];
+
+// Elementos do DOM
+const loginContainer = document.getElementById('login-container');
+const adminPanel = document.getElementById('admin-panel');
+const loginForm = document.getElementById('login-form');
+const formResenha = document.getElementById('form-resenha');
+const resenhasLista = document.getElementById('resenhas-lista');
+const semResenhas = document.getElementById('sem-resenhas');
+const btnSair = document.getElementById('btn-sair');
+const nomeAutora = document.getElementById('nome-autora');
+
+// Verificar se a autora já está logada
+function verificarLogin() {
+  const autoraLogada = localStorage.getItem('autoraLogada');
+  if (autoraLogada) {
+    loginContainer.style.display = 'none';
+    adminPanel.style.display = 'block';
+    nomeAutora.textContent = JSON.parse(autoraLogada).nome;
+  }
+}
+
+// Função para gerar ID único
+function gerarId() {
+  return Math.floor(Math.random() * 1000000);
+}
+
+// Função para formatar a data
+function formatarData(data) {
+  return new Date(data).toLocaleDateString('pt-BR');
+}
+
+// Função para gerar estrelas baseado na nota
+function gerarEstrelas(nota) {
+  let estrelas = '';
+  for (let i = 1; i <= 5; i++) {
+    if (i <= nota) {
+      estrelas += '★';
+    } else {
+      estrelas += '☆';
+    }
+  }
+  return estrelas;
+}
+
+// Função para fazer login
+function fazerLogin(event) {
+  event.preventDefault();
+  
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  
+  if (username === CREDENCIAIS.usuario && password === CREDENCIAIS.senha) {
+    // Login bem-sucedido
+    loginContainer.style.display = 'none';
+    adminPanel.style.display = 'block';
+    nomeAutora.textContent = "Larissa Barista";
+    
+    // Salvar no localStorage
+    localStorage.setItem('autoraLogada', JSON.stringify({
+      usuario: username,
+      nome: "Larissa Barista"
+    }));
+  } else {
+    alert('Usuário ou senha incorretos!');
+  }
+}
+
+// Função para fazer logout
+function fazerLogout() {
+  localStorage.removeItem('autoraLogada');
+  adminPanel.style.display = 'none';
+  loginContainer.style.display = 'block';
+  formResenha.reset();
+}
+
+// Função para adicionar uma nova resenha
+function adicionarResenha(event) {
+  event.preventDefault();
+  
+  const titulo = document.getElementById('titulo').value;
+  const autor = document.getElementById('autor-livro').value;
+  const capa = document.getElementById('capa').value;
+  const genero = document.getElementById('genero').value;
+  const nota = parseInt(document.getElementById('nota').value);
+  const resenhaTexto = document.getElementById('resenha-texto').value;
+  
+  const novaResenha = {
+    id: gerarId(),
+    titulo: titulo,
+    autor: autor,
+    capa: capa,
+    genero: genero,
+    nota: nota,
+    resenha: resenhaTexto,
+    data: formatarData(new Date())
+  };
+  
+  resenhas.unshift(novaResenha);
+  salvarResenhas();
+  renderizarResenhas();
+  
+  // Limpar o formulário
+  formResenha.reset();
+  
+  alert('Resenha publicada com sucesso!');
+}
+
+// Função para salvar resenhas no localStorage
+function salvarResenhas() {
+  localStorage.setItem('resenhasLivros', JSON.stringify(resenhas));
+}
+
+// Função para carregar resenhas do localStorage
+function carregarResenhas() {
+  const resenhasSalvas = localStorage.getItem('resenhasLivros');
+  if (resenhasSalvas) {
+    resenhas = JSON.parse(resenhasSalvas);
+  }
+}
+
+// Função para renderizar todas as resenhas
+function renderizarResenhas() {
+  if (resenhas.length === 0) {
+    semResenhas.style.display = 'block';
+    resenhasLista.innerHTML = '';
+    return;
+  }
+  
+  semResenhas.style.display = 'none';
+  
+  let html = '';
+  
+  resenhas.forEach(resenha => {
+    html += `
+      <div class="resenha-card" data-id="${resenha.id}">
+        <div class="resenha-header">
+          <div>
+            <h3 class="resenha-titulo">${resenha.titulo}</h3>
+            <p class="resenha-autor">${resenha.autor} | ${resenha.genero}</p>
+          </div>
+          <div class="resenha-meta">
+            <span class="resenha-data">${resenha.data}</span>
+          </div>
+        </div>
+        
+        ${resenha.capa ? `<img src="${resenha.capa}" alt="Capa de ${resenha.titulo}" class="resenha-capa">` : ''}
+        
+        <div class="resenha-texto">
+          ${resenha.resenha}
+        </div>
+        
+        <div class="resenha-nota">
+          ${gerarEstrelas(resenha.nota)} (${resenha.nota}/5)
+        </div>
+        
+        <div class="acoes-resenha admin-only">
+          <button class="btn-editar" onclick="editarResenha(${resenha.id})">Editar</button>
+          <button class="btn-excluir" onclick="excluirResenha(${resenha.id})">Excluir</button>
+        </div>
+      </div>
+    `;
+  });
+  
+  resenhasLista.innerHTML = html;
+  
+  // Mostrar botões de edição/exclusão apenas se a autora estiver logada
+  const acoes = document.querySelectorAll('.acoes-resenha');
+  const autoraLogada = localStorage.getItem('autoraLogada');
+  if (autoraLogada) {
+    acoes.forEach(acao => acao.style.display = 'block');
+  } else {
+    acoes.forEach(acao => acao.style.display = 'none');
+  }
+}
+
+// Função para editar uma resenha
+function editarResenha(id) {
+  const resenha = resenhas.find(r => r.id === id);
+  
+  if (resenha) {
+    // Preencher o formulário com os dados da resenha
+    document.getElementById('titulo').value = resenha.titulo;
+    document.getElementById('autor-livro').value = resenha.autor;
+    document.getElementById('capa').value = resenha.capa || '';
+    document.getElementById('genero').value = resenha.genero;
+    document.getElementById('nota').value = resenha.nota;
+    document.getElementById('resenha-texto').value = resenha.resenha;
+    
+    // Remover a resenha antiga
+    excluirResenha(id, false);
+    
+    // Rolar até o formulário
+    adminPanel.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+// Função para excluir uma resenha
+function excluirResenha(id, confirmar = true) {
+  if (confirmar && !confirm('Tem certeza que deseja excluir esta resenha?')) {
+    return;
+  }
+  
+  const index = resenhas.findIndex(r => r.id === id);
+  if (index !== -1) {
+    resenhas.splice(index, 1);
+    salvarResenhas();
+    renderizarResenhas();
+  }
+}
+
+// Event Listeners
+loginForm.addEventListener('submit', fazerLogin);
+formResenha.addEventListener('submit', adicionarResenha);
+btnSair.addEventListener('click', fazerLogout);
+
+// Inicialização
+carregarResenhas();
+verificarLogin();
+renderizarResenhas();
+</script>
+</body>
+</html>
