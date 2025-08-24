@@ -56,7 +56,8 @@ header::before {
   opacity: 0.7;
 }
 
-h1 {
+/* Título principal do HEADER apenas */
+header h1 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 3.8rem;
   font-weight: 700;
@@ -105,7 +106,7 @@ main {
   width: 100%;
 }
 
-/* Títulos de seção */
+/* Títulos de seção - APENAS no main */
 main h1 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 2.8rem;
@@ -281,7 +282,7 @@ footer button:hover {
     padding: 2rem 0;
   }
   
-  h1 {
+  header h1 {
     font-size: 2.8rem;
   }
   
@@ -308,7 +309,7 @@ footer button:hover {
     padding: 0 15px;
   }
   
-  h1 {
+  header h1 {
     font-size: 2.2rem;
   }
   
@@ -364,13 +365,8 @@ footer button:hover {
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(to bottom, #7b3acb, #5a2ebd);
 }
-.minha-capa{
+
+.minha-capa {
   width: 500px;
   height: auto;
-  
 }
-
-
-
-
-
